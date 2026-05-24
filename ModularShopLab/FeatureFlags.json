@@ -1,0 +1,8 @@
+{
+  "cart": true,
+  "checkout": true,
+  "clientManagement": true,
+  "favorites": true,
+  "passwordReset": true,
+  "productSearch": true
+}

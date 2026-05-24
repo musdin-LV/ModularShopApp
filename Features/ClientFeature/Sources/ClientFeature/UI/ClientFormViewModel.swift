@@ -1,0 +1,97 @@
+import Observation
+
+@MainActor
+@Observable
+public final class ClientFormViewModel {
+    public enum Mode: Equatable, Sendable {
+        case create
+        case update(Client)
+    }
+
+    public let mode: Mode
+    public var firstName: String
+    public var lastName: String
+    public var email: String
+    public var phone: String
+    public var country: ClientCountry
+
+    public private(set) var isLoading = false
+    public private(set) var errorMessage: String?
+
+    private let saveClientUseCase: SaveClientUseCase
+
+    public init(mode: Mode, saveClientUseCase: SaveClientUseCase) {
+        self.mode = mode
+        self.saveClientUseCase = saveClientUseCase
+
+        switch mode {
+        case .create:
+            self.firstName = ""
+            self.lastName = ""
+            self.email = ""
+            self.phone = ""
+            self.country = .france
+        case let .update(client):
+            self.firstName = client.firstName
+            self.lastName = client.lastName
+            self.email = client.email
+            self.phone = client.phone ?? ""
+            self.country = client.country
+        }
+    }
+
+    public var title: String {
+        switch mode {
+        case .create:
+            "Create client"
+        case .update:
+            "Update client"
+        }
+    }
+
+    public var submitTitle: String {
+        switch mode {
+        case .create:
+            "Create"
+        case .update:
+            "Save"
+        }
+    }
+
+    public func save() async -> Client? {
+        isLoading = true
+        errorMessage = nil
+
+        defer {
+            isLoading = false
+        }
+
+        do {
+            return try await saveClientUseCase.execute(
+                mode: saveClientMode,
+                input: ClientFormInput(
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: phone,
+                    country: country
+                )
+            )
+        } catch ClientError.emptyRequiredFields {
+            errorMessage = "First name, last name and email are required."
+            return nil
+        } catch {
+            errorMessage = "Unable to save client."
+            return nil
+        }
+    }
+
+    private var saveClientMode: SaveClientMode {
+        switch mode {
+        case .create:
+            .create
+        case let .update(client):
+            .update(client)
+        }
+    }
+}
