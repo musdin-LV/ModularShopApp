@@ -1,0 +1,82 @@
+flowchart TB
+    App["ModularShopLab App Target<br/>Composition Root<br/>AppDependencies"]
+
+    subgraph AppLayer["App"]
+        Root["Root SwiftUI<br/>AppRootView<br/>MainTabs / IPadMainView"]
+        Config["Runtime Config<br/>Mock / Remote<br/>iPhone / iPad"]
+        Web["External Web<br/>WebTipsView"]
+    end
+
+    subgraph Features["Features"]
+        Home["HomeFeature<br/>HomeView"]
+        Auth["AuthFeature<br/>AuthView<br/>Login / Register / Forgot password"]
+        Product["ProductFeature<br/>ProductList / ProductDetail<br/>ProductRepository"]
+        Cart["CartFeature<br/>CartView<br/>CartStore"]
+        Favorites["FavoritesFeature<br/>FavoritesView<br/>FavoriteStore"]
+        Client["ClientFeature<br/>Client Flow<br/>Search / Detail / Create / Update"]
+        Payment["PaymentFeature<br/>Tap to Pay<br/>UseCase + Worker"]
+    end
+
+    subgraph Core["Core"]
+        Design["DesignSystem<br/>PrimaryButton<br/>LoadingView<br/>ErrorStateView<br/>ProductCardView"]
+        Networking["Networking<br/>APIClient protocol<br/>URLSessionAPIClient"]
+        Flags["FeatureFlags<br/>JSON / Remote<br/>Capabilities"]
+        StoreContext["StoreContext<br/>Employee + Store context"]
+        Observability["Observability<br/>Console + Firebase logging"]
+        Foundation["ShopFoundation<br/>Light shared utilities"]
+    end
+
+    subgraph External["External Systems"]
+        DummyJSON["DummyJSON API"]
+        Firebase["Firebase<br/>Analytics / Crashlytics"]
+        LocalJSON["Bundled JSON<br/>FeatureFlags"]
+        Adyen["Adyen SDK boundary<br/>Tap to Pay adapter"]
+    end
+
+    App --> Root
+    App --> Config
+    App --> Auth
+    App --> Home
+    App --> Product
+    App --> Cart
+    App --> Favorites
+    App --> Client
+    App --> Payment
+    App --> Flags
+    App --> StoreContext
+    App --> Observability
+    App --> Networking
+
+    Root --> Web
+
+    Auth --> Design
+    Auth --> Networking
+    Product --> Design
+    Product --> Networking
+    Cart --> Design
+    Cart --> Product
+    Favorites --> Design
+    Favorites --> Product
+    Client --> Design
+    Client --> Networking
+    Home --> Design
+    Payment --> Design
+    Payment --> Networking
+    Payment --> Observability
+
+    Flags --> Networking
+    StoreContext --> Networking
+    Observability --> Firebase
+    Networking --> DummyJSON
+    Flags --> LocalJSON
+    Payment --> Adyen
+
+    classDef app fill:#1f6feb,color:#fff,stroke:#0d419d,stroke-width:2px;
+    classDef feature fill:#dff6ff,color:#0f172a,stroke:#0891b2,stroke-width:1px;
+    classDef core fill:#fef3c7,color:#0f172a,stroke:#d97706,stroke-width:1px;
+    classDef external fill:#f3e8ff,color:#0f172a,stroke:#9333ea,stroke-width:1px;
+
+    class App,Root,Config,Web app;
+    class Home,Auth,Product,Cart,Favorites,Client,Payment feature;
+    class Design,Networking,Flags,StoreContext,Observability,Foundation core;
+    class DummyJSON,Firebase,LocalJSON,Adyen external;
