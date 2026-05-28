@@ -138,3 +138,48 @@ Pour aller plus loin :
 - [Feature Modularization Audit](docs/architecture/feature-modularization-audit.md)
 - [iPad / iPhone Retail Specifics](docs/architecture/ipad-iphone-retail-specifics.md)
 - [SwiftData Client Cache](docs/architecture/swiftdata-client-cache.md)
+
+## Skill De Migration
+
+Le repo contient aussi un skill pour aider un agent IA a migrer un projet Swift ou SwiftUI depuis une architecture existante vers cette architecture cible.
+
+- [Modular Architecture Migrator](skills/modular-architecture-migrator/SKILL.md)
+- [Copilot instructions](.github/copilot-instructions.md)
+
+Ce skill guide l'agent pour identifier les features, cartographier les dependances, proposer un plan par phases, puis implementer la migration progressivement avec validation a chaque etape.
+
+### Installation Dans Codex
+
+Le skill est versionne dans le repo, mais pour qu'il soit disponible globalement dans Codex, il faut le copier dans le dossier des skills Codex :
+
+```sh
+mkdir -p ~/.codex/skills
+cp -R skills/modular-architecture-migrator ~/.codex/skills/
+```
+
+Une fois installe, il peut etre appele naturellement dans une conversation, par exemple :
+
+```text
+Utilise le skill modular-architecture-migrator pour analyser ce projet et proposer une migration vers l'architecture App/Core/Features.
+```
+
+Le skill chargera d'abord son workflow principal, puis ses references seulement si elles sont utiles :
+
+- `references/target-architecture.md` pour les regles de l'architecture cible ;
+- `references/copilot-integration.md` pour generer ou adapter des instructions Copilot.
+
+### Utilisation Avec Copilot
+
+Copilot ne charge pas automatiquement les skills Codex. Pour l'utiliser avec Copilot, le repo fournit deja :
+
+```text
+.github/copilot-instructions.md
+```
+
+GitHub Copilot peut utiliser ce fichier comme instructions de repository. Pour un autre projet, il suffit de copier ce fichier dans le repo cible, puis d'adapter les noms de modules si besoin.
+
+Pour une utilisation ponctuelle dans Copilot Chat, copier le prompt depuis :
+
+```text
+skills/modular-architecture-migrator/references/copilot-integration.md
+```
