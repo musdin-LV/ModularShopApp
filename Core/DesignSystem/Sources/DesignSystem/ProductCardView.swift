@@ -66,3 +66,17 @@ public struct ProductCardView: View {
         .accessibilityElement(children: .combine)
     }
 }
+
+#if DEBUG
+#Preview("Product card") {
+    ProductCardView(
+        imageURL: nil,
+        title: "Running Jacket",
+        price: "129.99 EUR",
+        description: "Lightweight jacket for in-store sales flows and clienteling demos.",
+        actionTitle: "Add to cart",
+        action: {}
+    )
+    .padding()
+}
+#endif

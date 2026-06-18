@@ -62,3 +62,43 @@ public struct FavoritesView: View {
         }
     }
 }
+
+#if DEBUG
+#Preview("Favorites") {
+    FavoritesView(
+        viewModel: FavoritesViewModel(
+            store: PreviewFavoriteStore(products: [
+                Product(
+                    id: 1,
+                    title: "Running Jacket",
+                    price: 129.99,
+                    description: "Lightweight jacket for in-store clienteling demos.",
+                    thumbnailURL: nil
+                ),
+                Product(
+                    id: 2,
+                    title: "Trail Shoes",
+                    price: 159.50,
+                    description: "Cushioned shoes with a mock stock-ready product description.",
+                    thumbnailURL: nil
+                )
+            ])
+        ),
+        onAddToCart: { _ in }
+    )
+}
+
+private struct PreviewFavoriteStore: FavoriteStore {
+    let products: [Product]
+
+    func products() async -> [Product] {
+        products
+    }
+
+    func contains(productID: Product.ID) async -> Bool {
+        products.contains { $0.id == productID }
+    }
+
+    func toggle(product: Product) async {}
+}
+#endif
